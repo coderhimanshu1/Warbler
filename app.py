@@ -237,11 +237,6 @@ def update_profile():
         flash("Invalid password, please try again to continue.", 'danger')
 
     return render_template('users/edit.html', form=form, user_id=user.id)
-        
-        
-    
-        
-        
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -322,8 +317,11 @@ def homepage():
     """
 
     if g.user:
+        user = g.user
+        following_ids = [f.id for f in user.following] + [user.id]
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(following_ids))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
