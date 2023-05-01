@@ -210,6 +210,17 @@ def stop_following(follow_id):
 
     return redirect(f"/users/{g.user.id}/following")
 
+@app.route('/users/<int:user_id>/likes')
+def users_likes(user_id):
+    """Show list of messages liked by this user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+    liked_msg_ids = [msg.id for msg in g.user.likes]
+    return render_template('users/likes.html', user=user, likes = liked_msg_ids)
 
 @app.route('/users/profile', methods=["GET", "POST"])
 def update_profile():
